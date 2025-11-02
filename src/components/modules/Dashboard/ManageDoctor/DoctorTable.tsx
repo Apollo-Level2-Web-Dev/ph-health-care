@@ -8,7 +8,8 @@ import { DoctorFormDialog } from "./DoctorFormDialog";
 import { useDoctors } from "@/hooks/UseDoctor";
 import { DoctorInterface } from "@/types/userTypes";
 import HeartbeatLoader from "@/components/shared/Loader";
-import { cn } from "@/lib/utils";
+import Link from "next/link";
+import { LayoutDashboard } from 'lucide-react';
 
 export function DoctorTable() {
   const {doctors, removeDoctor, isLoading} = useDoctors()
@@ -32,6 +33,9 @@ export function DoctorTable() {
     <main className="mt-10 p-10 mx-auto">
       <div className="flex justify-between items-center mb-6">
         <div>
+          <Link href={"/admin/dashboard"}><Button> <LayoutDashboard/> Dashboard</Button></Link>
+        </div>
+        <div className="text-center">
           <h2 className="text-3xl font-bold">Manage Doctors</h2>
           <p className="text-muted-foreground mt-1">
             Add, update, and delete doctors with ease.
