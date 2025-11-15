@@ -19,15 +19,6 @@ export const doctorsColumns: Column<IDoctor>[] = [
     ),
   },
   {
-    header: "Designation",
-    accessor: (doctor) => (
-      <div className="flex flex-col">
-        <span className="text-sm font-medium">{doctor.designation}</span>
-        <span className="text-xs text-gray-500">{doctor.qualification}</span>
-      </div>
-    ),
-  },
-  {
     header: "Specialties",
     accessor: (doctor) => (
       <div className="flex flex-wrap gap-1">
@@ -51,9 +42,6 @@ export const doctorsColumns: Column<IDoctor>[] = [
     accessor: (doctor) => (
       <div className="flex flex-col">
         <span className="text-sm">{doctor.contactNumber}</span>
-        {doctor.address && (
-          <span className="text-xs text-gray-500">{doctor.address}</span>
-        )}
       </div>
     ),
   },
@@ -85,21 +73,9 @@ export const doctorsColumns: Column<IDoctor>[] = [
     ),
   },
   {
-    header: "Working Place",
-    accessor: (doctor) => (
-      <span className="text-sm">{doctor.currentWorkingPlace}</span>
-    ),
-  },
-  {
     header: "Gender",
     accessor: (doctor) => (
       <span className="text-sm capitalize">{doctor.gender.toLowerCase()}</span>
-    ),
-  },
-  {
-    header: "Registration No.",
-    accessor: (doctor) => (
-      <span className="text-sm font-mono">{doctor.registrationNumber}</span>
     ),
   },
   {

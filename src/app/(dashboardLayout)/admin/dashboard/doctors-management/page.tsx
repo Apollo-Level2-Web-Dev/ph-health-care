@@ -23,7 +23,6 @@ const AdminDoctorsManagementPage = async ({
   const totalPages = Math.ceil(
     doctorsResult.meta.total / doctorsResult.meta.limit
   );
-  console.log({ doctorsResult });
   return (
     <div className="space-y-6">
       <DoctorsManagementHeader specialities={specialitiesResult.data} />
@@ -40,7 +39,10 @@ const AdminDoctorsManagementPage = async ({
         <RefreshButton />
       </div>
       <Suspense fallback={<TableSkeleton columns={10} rows={10} />}>
-        <DoctorsTable doctors={doctorsResult.data} />
+        <DoctorsTable
+          doctors={doctorsResult.data}
+          specialities={specialitiesResult.data}
+        />
         <TablePagination
           currentPage={doctorsResult.meta.page}
           totalPages={totalPages}

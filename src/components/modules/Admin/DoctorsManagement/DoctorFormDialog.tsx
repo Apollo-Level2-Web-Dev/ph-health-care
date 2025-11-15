@@ -73,8 +73,7 @@ const DoctorFormDialog = ({
                 id="name"
                 name="name"
                 placeholder="Dr. John Doe"
-                defaultValue={doctor?.name}
-                value={isEdit ? doctor?.name : undefined}
+                defaultValue={isEdit ? doctor?.name : undefined}
               />
               <InputFieldError state={state} field="name" />
             </Field>
@@ -126,7 +125,8 @@ const DoctorFormDialog = ({
                 id="specialities"
                 name="specialities"
                 placeholder="Select a speciality"
-                value={selectedSpeciality}
+                // defaultValue={isEdit ? doctor?.doctorSpecialties?.[0]?.specialties?.title : ""}
+                defaultValue={selectedSpeciality}
                 type="hidden"
               />
               <Select
@@ -217,7 +217,7 @@ const DoctorFormDialog = ({
                 id="gender"
                 name="gender"
                 placeholder="Select gender"
-                value={gender}
+                defaultValue={gender}
                 type="hidden"
               />
               <Select

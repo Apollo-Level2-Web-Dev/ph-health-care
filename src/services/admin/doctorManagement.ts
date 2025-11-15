@@ -62,7 +62,6 @@ export async function createDoctor(_prevState: any, formData: FormData) {
 
         const result = await response.json();
 
-        console.log({ result });
 
         return result;
     } catch (error: any) {
@@ -76,7 +75,6 @@ export async function getDoctors(queryString?: string) {
     try {
         const response = await serverFetch.get(`/doctor${queryString ? `?${queryString}` : ""}`);
         const result = await response.json();
-        console.log({ result });
         return result;
     } catch (error: any) {
         console.log(error);
@@ -91,7 +89,6 @@ export async function getDoctorById(id: string) {
     try {
         const response = await serverFetch.get(`/doctor/${id}`)
         const result = await response.json();
-        console.log({ result });
         return result;
     } catch (error: any) {
         console.log(error);
@@ -117,16 +114,14 @@ export async function updateDoctor(id: string, _prevState: any, formData: FormDa
             designation: formData.get("designation") as string,
         }
         const validatedPayload = zodValidator(payload, updateDoctorZodSchema).data;
-        const newFormData = new FormData()
-        newFormData.append("data", JSON.stringify(validatedPayload))
-        if (formData.get("file")) {
-            newFormData.append("file", formData.get("file") as Blob)
-        }
-        const response = await serverFetch.put(`/doctor/${id}`, {
-            body: newFormData,
+
+        const response = await serverFetch.patch(`/doctor/${id}`, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(validatedPayload),
         })
         const result = await response.json();
-        console.log({ result });
         return result;
     } catch (error: any) {
         console.log(error);
@@ -138,9 +133,7 @@ export async function softDeleteDoctor(id: string) {
     try {
         const response = await serverFetch.delete(`/doctor/soft/${id}`)
         const result = await response.json();
-        console.log({
-            result
-        });
+
         return result;
     } catch (error: any) {
         console.log(error);
@@ -154,9 +147,7 @@ export async function deleteDoctor(id: string) {
     try {
         const response = await serverFetch.delete(`/doctor/${id}`)
         const result = await response.json();
-        console.log({
-            result
-        });
+
         return result;
     } catch (error: any) {
         console.log(error);
