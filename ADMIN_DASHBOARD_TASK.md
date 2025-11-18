@@ -475,7 +475,7 @@ const DoctorViewDetailDialog = ({ open, onClose, doctor }) => {
           {/* Gradient Header with Avatar */}
           <div
             className="flex items-center gap-6 p-6 
-                                    bg-gradient-to-br from-blue-50 to-indigo-50 
+                                    bg-linear-to-br from-blue-50 to-indigo-50 
                                     rounded-lg mb-6"
           >
             <Avatar className="h-24 w-24 border-4 border-white shadow-lg">
