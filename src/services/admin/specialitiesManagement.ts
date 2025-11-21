@@ -6,27 +6,37 @@ import { serverFetch } from "@/lib/server-fetch";
 import { zodValidator } from "@/lib/zodValidator";
 import { createSpecialityZodSchema } from "@/zod/specialities.validation";
 
-
-
-
 export async function createSpeciality(_prevState: any, formData: FormData) {
+
+    const validationPayload = {
+        title: formData.get("title") as string,
+        icon: formData.get("file") as File,
+    }
+
+    const validatedPayload = zodValidator(validationPayload, createSpecialityZodSchema);
+
+    if (!validatedPayload.success && validatedPayload.errors) {
+        return {
+            success: false,
+            message: "Validation failed",
+            formData: validationPayload,
+            errors: validatedPayload.errors,
+        }
+    }
+
+    if (!validatedPayload.data) {
+        return {
+            success: false,
+            message: "Validation failed",
+            formData: validationPayload,
+        }
+    }
+
+    const newFormData = new FormData()
+    newFormData.append("data", JSON.stringify(validatedPayload.data))
+    newFormData.append("file", formData.get("file") as Blob)
+
     try {
-        const payload = {
-            title: formData.get("title") as string,
-        }
-        if (zodValidator(payload, createSpecialityZodSchema).success === false) {
-            return zodValidator(payload, createSpecialityZodSchema);
-        }
-
-        const validatedPayload = zodValidator(payload, createSpecialityZodSchema).data;
-
-        const newFormData = new FormData()
-        newFormData.append("data", JSON.stringify(validatedPayload))
-
-        if (formData.get("file")) {
-            newFormData.append("file", formData.get("file") as Blob)
-        }
-
         const response = await serverFetch.post("/specialties", {
             body: newFormData,
         })
@@ -36,7 +46,10 @@ export async function createSpeciality(_prevState: any, formData: FormData) {
         return result;
     } catch (error: any) {
         console.log(error);
-        return { success: false, message: `${process.env.NODE_ENV === 'development' ? error.message : 'Something went wrong'}` }
+        return {
+            success: false, message: `${process.env.NODE_ENV === 'development' ? error.message : 'Something went wrong'}`,
+            formData: validationPayload,
+        }
 
     }
 }
