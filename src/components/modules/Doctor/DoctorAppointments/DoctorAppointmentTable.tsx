@@ -1,15 +1,15 @@
 "use client";
 
 import ManagementTable from "@/components/shared/ManagementTable";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { toast } from "sonner";
-import { doctorAppointmentColumns } from "./doctorAppointmentColumns";
 import {
   AppointmentStatus,
   IAppointment,
 } from "@/types/appointments.interface";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
 import ChangeAppointmentStatusDialog from "./ChangeAppointmentStatusDialog";
+import { doctorAppointmentColumns } from "./doctorAppointmentColumns";
 import DoctorAppointmentDetailDialog from "./DoctorAppointmentDetailDialog";
 
 interface DoctorAppointmentsTableProps {
@@ -76,8 +76,13 @@ export default function DoctorAppointmentsTable({
           appointment={viewingAppointment}
           open={!!viewingAppointment}
           onClose={() => {
+            // Clear the state first to prevent showing stale data
+            const shouldRefresh = true;
             setViewingAppointment(null);
-            router.refresh();
+            // Then refresh to get updated data from server
+            if (shouldRefresh) {
+              router.refresh();
+            }
           }}
         />
       )}

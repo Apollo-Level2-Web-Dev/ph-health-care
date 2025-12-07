@@ -1,4 +1,5 @@
 import DoctorAppointmentsTable from "@/components/modules/Doctor/DoctorAppointments/DoctorAppointmentTable";
+import { TableSkeleton } from "@/components/shared/TableSkeleton";
 import { getMyAppointments } from "@/services/patient/appointment.service";
 import { IAppointment } from "@/types/appointments.interface";
 import { Suspense } from "react";
@@ -20,7 +21,7 @@ export default async function DoctorAppointmentsPage() {
         </p>
       </div>
 
-      <Suspense fallback={<div>Loading appointments...</div>}>
+      <Suspense fallback={<TableSkeleton columns={8} rows={10} />}>
         <AppointmentsContent />
       </Suspense>
     </div>

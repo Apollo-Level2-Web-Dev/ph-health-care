@@ -52,17 +52,20 @@ export default function AISearchDialog({
   );
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [hasAutoSearched, setHasAutoSearched] = useState(false);
+  const [triggerSearch, setTriggerSearch] = useState(false);
 
   const open = externalOpen !== undefined ? externalOpen : internalOpen;
   const setOpen = onOpenChange || setInternalOpen;
 
-  // Update symptoms when initialSymptoms changes
+  // Update symptoms when initialSymptoms changes (from external source)
   useEffect(() => {
-    if (initialSymptoms && initialSymptoms !== symptoms) {
+    if (initialSymptoms && initialSymptoms !== symptoms && !open) {
+      // Only update when dialog is closed to prevent interference with user editing
       setSymptoms(initialSymptoms);
       setHasAutoSearched(false);
+      setTriggerSearch(true); // Mark that we should auto-search
     }
-  }, [initialSymptoms, symptoms]);
+  }, [initialSymptoms, symptoms, open]);
 
   const handleSearch = async () => {
     if (!symptoms.trim() || symptoms.trim().length < 5) {
@@ -94,17 +97,24 @@ export default function AISearchDialog({
     }
   };
 
-  // Auto-trigger search when dialog opens with symptoms
+  // Auto-trigger search when dialog opens with symptoms (only for external triggers)
   useEffect(() => {
-    if (open && symptoms && symptoms.trim().length >= 5 && !hasAutoSearched) {
+    if (
+      open &&
+      triggerSearch &&
+      symptoms &&
+      symptoms.trim().length >= 5 &&
+      !hasAutoSearched
+    ) {
       setHasAutoSearched(true);
+      setTriggerSearch(false); // Reset trigger
       // Small delay to ensure dialog is fully rendered
       setTimeout(() => {
         handleSearch();
       }, 50);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [open, symptoms, hasAutoSearched]);
+  }, [open, triggerSearch, hasAutoSearched]);
 
   // Reset when dialog is manually closed
   const handleDialogOpenChange = (newOpen: boolean) => {
@@ -116,6 +126,7 @@ export default function AISearchDialog({
       setOpen(newOpen);
       setTimeout(() => {
         setHasAutoSearched(false);
+        setTriggerSearch(false);
         setSymptoms("");
         setSuggestedDoctors([]);
         setShowSuggestions(false);
@@ -130,6 +141,7 @@ export default function AISearchDialog({
     setSuggestedDoctors([]);
     setShowSuggestions(false);
     setHasAutoSearched(false);
+    setTriggerSearch(false);
     onSearchComplete?.();
   };
 
@@ -162,6 +174,22 @@ export default function AISearchDialog({
               placeholder="Describe your symptoms in detail (e.g., severe headache for 3 days, high fever with chills, persistent cough with chest pain, etc.)..."
               value={symptoms}
               onChange={(e) => setSymptoms(e.target.value)}
+              onKeyDown={(e) => {
+                // Prevent keyboard shortcuts from triggering while typing
+                e.stopPropagation();
+                // Allow Enter to create new line, not trigger search
+                if (
+                  e.key === "Enter" &&
+                  !e.shiftKey &&
+                  !e.ctrlKey &&
+                  !e.metaKey
+                ) {
+                  // Only trigger search if explicitly pressing Enter alone
+                  // Comment this out to prevent Enter from searching while typing
+                  // e.preventDefault();
+                  // handleSearch();
+                }
+              }}
               rows={4}
               className="resize-none border-primary/30 focus:border-primary focus:ring-primary/50"
               disabled={isLoading}

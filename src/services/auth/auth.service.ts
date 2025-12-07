@@ -60,6 +60,7 @@ export async function resetPassword(_prevState: any, formData: FormData) {
 
 
 
+
     // Build validation payload
     const validationPayload = {
         newPassword: formData.get("newPassword") as string,
@@ -122,8 +123,13 @@ export async function resetPassword(_prevState: any, formData: FormData) {
 
         const result = await response.json();
 
+
         if (!result.success) {
             throw new Error(result.message || "Password reset failed");
+        }
+
+        if (result.success) {
+            revalidateTag("user-info", { expire: 0 });
         }
 
         return {
@@ -188,7 +194,6 @@ export async function getNewAccessToken() {
 
         const result = await response.json();
 
-        console.log("access token refreshed!!");
 
         const setCookieHeaders = response.headers.getSetCookie();
 

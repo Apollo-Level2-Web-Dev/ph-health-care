@@ -76,7 +76,6 @@ export async function getMyAppointments(queryString?: string) {
         }
         );
         const result = await response.json();
-        console.log({ result });
         return result;
     } catch (error: any) {
         console.error("Error fetching appointments:", error);
